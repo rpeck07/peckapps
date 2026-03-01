@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atlas — the Student OS | Peck Apps</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #060d1a; --blue: #38bdf8; --blue2: #0ea5e9;
+      --gold: #c9a84c; --text: #e2eaf4; --muted: #7a93b4;
+      --card: #0d1a2e; --border: #1a3050;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+    #stars { position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse at 20% 30%, #0a1f3a 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 70%, #071428 0%, transparent 60%), var(--bg); }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 52px; background: rgba(6,13,26,0.9); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 17px; color: white; text-decoration: none; }
+    .nav-logo span { color: var(--blue); }
+    .nav-links { display: flex; gap: 36px; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: white; }
+
+    section { position: relative; z-index: 1; }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 120px 24px 80px;
+    }
+    .hero-orb {
+      position: absolute; width: 800px; height: 800px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(56,189,248,0.06) 0%, transparent 70%);
+      pointer-events: none; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      animation: pulse 5s ease-in-out infinite;
+    }
+    .app-icon-large { width: 100px; height: 100px; border-radius: 24px; margin-bottom: 32px; box-shadow: 0 0 48px rgba(56,189,248,0.25); animation: fadeUp 0.8s ease both; }
+    .hero-sub { font-family: 'Sora', sans-serif; font-size: 12px; color: var(--blue); letter-spacing: 4px; text-transform: uppercase; font-weight: 600; margin-bottom: 20px; animation: fadeUp 0.8s 0.05s ease both; }
+    .hero h1 {
+      font-family: 'Sora', sans-serif; font-size: clamp(52px, 9vw, 100px); font-weight: 800;
+      line-height: 1.0; margin-bottom: 20px; letter-spacing: -3px;
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--blue) 0%, #93c5fd 50%, var(--gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-hook {
+      font-family: 'Sora', sans-serif; font-size: clamp(18px, 2.5vw, 26px);
+      font-weight: 600; color: white; margin-bottom: 20px;
+      animation: fadeUp 0.8s 0.15s ease both; letter-spacing: -0.3px;
+    }
+    .hero-hook em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--blue), #93c5fd);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero p { font-size: 17px; color: var(--muted); max-width: 500px; line-height: 1.75; margin-bottom: 48px; font-weight: 300; animation: fadeUp 0.8s 0.2s ease both; }
+    .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.8s 0.3s ease both; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 15px 32px; border-radius: 10px;
+      background: var(--blue2); color: white; font-weight: 600; font-size: 15px;
+      text-decoration: none; box-shadow: 0 0 32px rgba(56,189,248,0.2); transition: all 0.2s;
+      font-family: 'Sora', sans-serif;
+    }
+    .btn-primary:hover { background: var(--blue); box-shadow: 0 0 48px rgba(56,189,248,0.4); transform: translateY(-2px); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 15px 32px; border-radius: 10px;
+      border: 1px solid var(--border); color: var(--muted);
+      font-weight: 500; font-size: 15px; text-decoration: none; transition: all 0.2s;
+    }
+    .btn-outline:hover { border-color: rgba(56,189,248,0.4); color: white; transform: translateY(-2px); }
+
+    .divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); position: relative; z-index: 1; }
+
+    /* Feature deep-dive */
+    .feature-section { padding: 110px 24px; max-width: 1080px; margin: 0 auto; }
+    .section-label { font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: var(--blue); margin-bottom: 16px; }
+    .section-title { font-family: 'Sora', sans-serif; font-size: clamp(26px, 4vw, 42px); font-weight: 800; margin-bottom: 80px; line-height: 1.15; letter-spacing: -1px; }
+
+    .feature-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: center; margin-bottom: 100px;
+    }
+    .feature-row:last-child { margin-bottom: 0; }
+    .feature-row.reverse { direction: rtl; }
+    .feature-row.reverse > * { direction: ltr; }
+
+    .feature-text {}
+    .feature-icon-large { font-size: 40px; margin-bottom: 20px; }
+    .feature-name {
+      font-family: 'Sora', sans-serif; font-size: clamp(22px, 3vw, 30px);
+      font-weight: 800; margin-bottom: 16px; letter-spacing: -0.5px; line-height: 1.2;
+    }
+    .feature-name span {
+      background: linear-gradient(135deg, var(--blue), #93c5fd);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .feature-body { color: var(--muted); font-size: 16px; line-height: 1.8; font-weight: 300; margin-bottom: 24px; }
+    .feature-detail {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .feature-detail-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 14px; color: var(--text); line-height: 1.6;
+    }
+    .feature-detail-item::before {
+      content: '→'; color: var(--blue); font-weight: 700; flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* Screenshot placeholder */
+    .screenshot-placeholder {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; aspect-ratio: 9/16; max-width: 260px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px; margin: 0 auto;
+      position: relative; overflow: hidden;
+    }
+    .screenshot-placeholder::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 30%, rgba(56,189,248,0.05) 0%, transparent 70%);
+    }
+    .screenshot-placeholder-icon { font-size: 32px; opacity: 0.4; }
+    .screenshot-placeholder-text { font-family: 'Sora', sans-serif; font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; text-align: center; padding: 0 24px; }
+
+    /* How it works */
+    .howit { padding: 110px 24px; max-width: 720px; margin: 0 auto; }
+    .step { display: flex; gap: 28px; margin-bottom: 52px; align-items: flex-start; }
+    .step-num { font-family: 'Sora', sans-serif; font-size: 40px; font-weight: 800; color: var(--blue); opacity: 0.2; line-height: 1; flex-shrink: 0; width: 64px; letter-spacing: -2px; }
+    .step-content h3 { font-family: 'Sora', sans-serif; font-size: 19px; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.3px; }
+    .step-content p { color: var(--muted); font-size: 15px; line-height: 1.75; font-weight: 300; }
+
+    /* CTA */
+    .cta-section { padding: 110px 24px; text-align: center; }
+    .cta-box {
+      max-width: 580px; margin: 0 auto; padding: 64px 48px;
+      border-radius: 24px; border: 1px solid rgba(56,189,248,0.15);
+      background: linear-gradient(135deg, #0a1f3a 0%, #060d1a 100%);
+      position: relative; overflow: hidden;
+    }
+    .cta-box::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 0%, rgba(56,189,248,0.07) 0%, transparent 60%); }
+    .cta-box h2 { font-family: 'Sora', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 14px; position: relative; letter-spacing: -0.5px; }
+    .cta-box p { color: var(--muted); font-size: 16px; margin-bottom: 32px; line-height: 1.65; position: relative; font-weight: 300; }
+
+    footer {
+      border-top: 1px solid var(--border); padding: 36px 52px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: relative; z-index: 1; flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 15px; color: white; }
+    .footer-logo span { color: var(--blue); }
+    footer p { color: var(--muted); font-size: 13px; }
+    footer a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+    footer a:hover { color: white; }
+    .footer-links { display: flex; gap: 28px; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%,100% { opacity: 1; transform: translate(-50%,-50%) scale(1); } 50% { opacity: 0.6; transform: translate(-50%,-50%) scale(1.08); } }
+
+    @media (max-width: 768px) {
+      .feature-row { grid-template-columns: 1fr; gap: 36px; }
+      .feature-row.reverse { direction: ltr; }
+      .screenshot-placeholder { max-width: 200px; }
+    }
+    @media (max-width: 640px) {
+      nav { padding: 16px 20px; } .nav-links { display: none; }
+      footer { flex-direction: column; text-align: center; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+<div id="stars"></div>
+
+<nav>
+  <a href="../index.html" class="nav-logo">Peck<span>Apps</span></a>
+  <div class="nav-links">
+    <a href="../index.html">Home</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="mailto:support@peckapps.com">Support</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-orb"></div>
+  <img src="../atlas-icon.jpg" alt="Atlas" class="app-icon-large" onerror="this.style.display='none'" />
+  <div class="hero-sub">the Student OS</div>
+  <h1><span>Atlas</span></h1>
+  <div class="hero-hook">Stop procrastinating.<br><em>Start executing.</em></div>
+  <p>The smart academic dashboard that helps students navigate their workload, predict risk, and never miss a deadline.</p>
+  <div class="hero-cta">
+    <a href="#" class="btn-primary">📱 Download on App Store</a>
+    <a href="privacy.html" class="btn-outline">Privacy Policy</a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Feature Deep-Dives -->
+<section class="feature-section" id="features">
+  <div class="section-label">Features</div>
+  <div class="section-title">Built different.<br>Every detail matters.</div>
+
+  <!-- Danger Scoring -->
+  <div class="feature-row">
+    <div class="feature-text">
+      <div class="feature-icon-large">🎯</div>
+      <div class="feature-name">Know what's <span>actually urgent.</span></div>
+      <p class="feature-body">Most students guess which assignments to work on first. Atlas calculates a danger score for every assignment using a formula that weighs how close the deadline is, how much the assignment counts toward your grade, how confident you feel, and how many hours you still need to put in.</p>
+      <div class="feature-detail">
+        <div class="feature-detail-item">Color-coded risk levels from green to red so you know at a glance</div>
+        <div class="feature-detail-item">Updates in real time as deadlines get closer</div>
+        <div class="feature-detail-item">Factors in logged study hours so scores drop as you make progress</div>
+      </div>
+    </div>
+    <div class="screenshot-placeholder">
+      <div class="screenshot-placeholder-icon">📱</div>
+      <div class="screenshot-placeholder-text">Screenshot coming soon</div>
+    </div>
+  </div>
+
+  <!-- Workload Forecast -->
+  <div class="feature-row reverse">
+    <div class="feature-text">
+      <div class="feature-icon-large">📈</div>
+      <div class="feature-name">See your week <span>before it hits.</span></div>
+      <p class="feature-body">Atlas projects how many hours of work you have due each day over the next 5 days and visualizes it as a line chart. Heavy days show in orange. Crunch days show in red. You'll never be blindsided by a brutal Wednesday again.</p>
+      <div class="feature-detail">
+        <div class="feature-detail-item">Estimated hours per day based on your actual assignments</div>
+        <div class="feature-detail-item">Color-coded intensity — light, heavy, and crunch thresholds</div>
+        <div class="feature-detail-item">Updates automatically as you complete assignments or log hours</div>
+      </div>
+    </div>
+    <div class="screenshot-placeholder">
+      <div class="screenshot-placeholder-icon">📱</div>
+      <div class="screenshot-placeholder-text">Screenshot coming soon</div>
+    </div>
+  </div>
+
+  <!-- Grade Calculator -->
+  <div class="feature-row">
+    <div class="feature-text">
+      <div class="feature-icon-large">🅰️</div>
+      <div class="feature-name">Know the number <span>you need.</span></div>
+      <p class="feature-body">Pick any assignment from your list, set your target final grade, and Atlas instantly calculates exactly what score you need to achieve it — using your current grade in that specific course, not some generic estimate.</p>
+      <div class="feature-detail">
+        <div class="feature-detail-item">Per-course grade tracking so calculations are always accurate</div>
+        <div class="feature-detail-item">Quick target presets (70, 75, 80, 85, 90, 95) or enter your own</div>
+        <div class="feature-detail-item">Clear feedback if the target is already secured or mathematically impossible</div>
+      </div>
+    </div>
+    <div class="screenshot-placeholder">
+      <div class="screenshot-placeholder-icon">📱</div>
+      <div class="screenshot-placeholder-text">Screenshot coming soon</div>
+    </div>
+  </div>
+
+  <!-- Study Timer -->
+  <div class="feature-row reverse">
+    <div class="feature-text">
+      <div class="feature-icon-large">⏱</div>
+      <div class="feature-name">Study smarter, <span>track everything.</span></div>
+      <p class="feature-body">Start a focused study session tied directly to an assignment. Every minute you log automatically counts toward that assignment's progress — reducing its danger score and updating your workload forecast in real time.</p>
+      <div class="feature-detail">
+        <div class="feature-detail-item">Tie each session to a specific assignment</div>
+        <div class="feature-detail-item">Hours logged automatically reduce workload estimates</div>
+        <div class="feature-detail-item">Haptic feedback when you stop so you know it's saved</div>
+      </div>
+    </div>
+    <div class="screenshot-placeholder">
+      <div class="screenshot-placeholder-icon">📱</div>
+      <div class="screenshot-placeholder-text">Screenshot coming soon</div>
+    </div>
+  </div>
+
+</section>
+
+<div class="divider"></div>
+
+<!-- How It Works -->
+<section class="howit" id="how">
+  <div class="section-label">How It Works</div>
+  <div class="section-title">Get started in minutes.</div>
+  <div class="step">
+    <div class="step-num">01</div>
+    <div class="step-content">
+      <h3>Add Your Courses</h3>
+      <p>Set up your courses with colors and your current grade in each one. Atlas uses this to make every calculation accurate to your actual situation.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">02</div>
+    <div class="step-content">
+      <h3>Add Assignments</h3>
+      <p>Enter each assignment with its due date, grade weight, estimated hours, and confidence level. Takes about 20 seconds per assignment.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">03</div>
+    <div class="step-content">
+      <h3>Let Atlas Navigate</h3>
+      <p>Your dashboard updates in real time. Check your danger scores, workload forecast, and grade targets every day to stay ahead of your semester.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="cta-section">
+  <div class="cta-box">
+    <h2>Ready to take control?</h2>
+    <p>Download Atlas on the App Store and start your semester with a real plan.</p>
+    <a href="#" class="btn-primary">📱 Download on App Store</a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<footer>
+  <div class="footer-logo">Peck<span>Apps</span></div>
+  <p>© 2026 Peck Apps. All rights reserved.</p>
+  <div class="footer-links">
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="mailto:support@peckapps.com">Support</a>
+    <a href="../index.html">← Home</a>
+  </div>
+</footer>
+</body>
+</html>
